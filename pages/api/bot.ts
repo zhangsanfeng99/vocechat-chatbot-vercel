@@ -21,7 +21,7 @@ const sendMessageToBot = async (url: string, message: string) => {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-    console.log("bot.ts handler", req.method);
+    console.log("bot.ts handler", req.method, VOCECHAT_BOT_SECRET, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN);
     let _url = `${VOCECHAT_ORIGIN}/api/bot/`;
     try {
         switch (req.method) {
