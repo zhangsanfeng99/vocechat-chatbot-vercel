@@ -23,7 +23,7 @@ const sendMessageToBot = async (url: string, message: string) => {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-    console.log("bot: from webhook push", req.method, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN, VOCECHAT_BOT_SECRET.slice(-5));
+    console.log("bot: from webhook push", req.method, req.url, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN, VOCECHAT_BOT_SECRET.slice(-5));
     if (!req.url.startsWith(VOCECHAT_ORIGIN)) {
         return new Response(`bot: invalided source`, { status: 403 });
     }
