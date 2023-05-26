@@ -1,8 +1,8 @@
 import { Message } from '@/types/vocechat';
 import { OPENAI_API_HOST, OPENAI_ORGANIZATION, VOCECHAT_BOT_SECRET, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN } from '@/utils/app/const';
-// export const config = {
-//     runtime: 'edge',
-// };
+export const config = {
+    runtime: 'edge',
+};
 
 const sendMessageToBot = async (url: string, message: string) => {
     // 通过bot给vocechat发消息
@@ -29,10 +29,9 @@ const handler = async (req: Request): Promise<Response> => {
         switch (req.method) {
             case "GET":
                 return new Response(`${req.method}: bot resp`, { status: 200 });
-            // break;
             case "POST": {
                 const data = await req.json() as Message;
-                console.log("bot.ts handler POST", data);
+                console.log("bot: handler POST", data);
                 const mentions = (data.detail.properties ?? {}).mentions ?? [];
                 // 机器人本人发的消息不处理
                 if (data.from_uid == VOCECHAT_BOT_UID) {
@@ -99,12 +98,9 @@ const handler = async (req: Request): Promise<Response> => {
                 });
                 return new Response(`OK`, { status: 200 });
             }
-            // break;
-
             default:
                 console.log("bot: handler default", req.method);
                 return new Response(`${req.method}: bot resp`, { status: 200 });
-            // break;
         }
     } catch (error) {
         console.error("bot: error", error);
