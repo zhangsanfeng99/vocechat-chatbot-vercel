@@ -54,9 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
                     _url += `send_to_user/${data.from_uid}`;
                 }
                 console.log("bot: start req ChatGPT");
-                let inter = setTimeout(() => {
-                    sendMessageToBot(_url, "**正在为您生成回答，请耐心等待...**");
-                }, 5000);
+                sendMessageToBot(_url, "**正在生成回答，请耐心等待...**");
                 const resp = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -83,13 +81,13 @@ const handler = async (req: Request): Promise<Response> => {
                         stream: false,
                     }),
                 })
-                clearTimeout(inter)
                 const gptData = await resp.json();
                 const [{ message: { content } }] = gptData.choices;
                 // 通过bot给vocechat发消息
                 sendMessageToBot(_url, content);
                 return new Response(`OK`, { status: 200 });
             }
+                break
             default:
                 console.log("bot: handler default", req.method);
                 return new Response(`${req.method}: bot resp`, { status: 200 });
