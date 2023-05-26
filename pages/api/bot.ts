@@ -86,6 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
                     }),
                 })
                 const gptData = await resp.json();
+                console.log("bot: end req ChatGPT", gptData);
                 const [{ message: { content } }] = gptData.choices;
                 // 通过bot给vocechat发消息
                 sendMessageToBot(_url, content);
