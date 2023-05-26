@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
         switch (req.method) {
             case "GET":
                 handlerResp = new Response(`${req.method}: bot resp`, { status: 200 });
-                break
+                break;
             case "POST": {
                 const data = await req.json() as Message;
                 console.log("bot: handler POST", data);
@@ -39,6 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
                 if (data.from_uid == VOCECHAT_BOT_UID) {
                     console.log("bot: ignore sent by bot self");
                     handlerResp = new Response(`ignore sent by bot self`, { status: 200 });
+                    break;
                 }
                 // 群里没at 此bot的消息不处理
                 if ('gid' in data.target) {
@@ -46,6 +47,7 @@ const handler = async (req: Request): Promise<Response> => {
                     if (!mentionedAtGroup) {
                         console.log("bot: ignore not mention at group");
                         handlerResp = new Response(`ignore not mention at group`, { status: 200 });
+                        break;
                     }
                 }
 
@@ -88,6 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
                 // 通过bot给vocechat发消息
                 sendMessageToBot(_url, content);
                 handlerResp = new Response(`OK`, { status: 200 });
+
             }
                 break;
             default:
