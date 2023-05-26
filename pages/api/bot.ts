@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
                 let inter = setTimeout(() => {
                     sendMessageToBot(_url, "**正在为您生成回答，请耐心等待...**");
                 }, 5000);
-                fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
+                const resp = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -82,20 +82,12 @@ const handler = async (req: Request): Promise<Response> => {
                         temperature: 1,
                         stream: false,
                     }),
-                }).then(resp => {
-                    clearTimeout(inter)
-                    resp.json().then(data => {
-                        const [{ message: { content } }] = data.choices;
-                        // 通过bot给vocechat发消息
-                        sendMessageToBot(_url, content);
-                    });
-                }).catch(err => {
-                    clearTimeout(inter)
-                    console.error("bot: error", err);
-                    // 通过bot给vocechat发消息
-                    sendMessageToBot(_url, "**Something Error!**");
-                    return new Response(`Error`, { status: 200 });
-                });
+                })
+                clearTimeout(inter)
+                const gptData = await resp.json();
+                const [{ message: { content } }] = gptData.choices;
+                // 通过bot给vocechat发消息
+                sendMessageToBot(_url, content);
                 return new Response(`OK`, { status: 200 });
             }
             default:
