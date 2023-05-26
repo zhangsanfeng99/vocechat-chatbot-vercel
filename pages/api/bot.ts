@@ -6,22 +6,27 @@ export const config = {
 
 const sendMessageToBot = async (url: string, message: string) => {
     // 通过bot给vocechat发消息
-    fetch(url, {
-        method: "POST",
-        headers: {
-            "content-type": "text/markdown",
-            "x-api-key": VOCECHAT_BOT_SECRET,
-        },
-        body: message,
-    }).then((resp) => {
-        console.log("发送成功，消息ID：", resp.body);
-    }).catch((err) => {
-        console.error("发送失败：", err, url, VOCECHAT_BOT_SECRET);
-    });
+    try {
+        let resp = await fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "text/markdown",
+                "x-api-key": VOCECHAT_BOT_SECRET,
+            },
+            body: message,
+        });
+        resp = await resp.json();
+        console.log("bot: send successfully", resp);
+    } catch (error) {
+        console.error("bot: send failed", url, error);
+    }
 }
 
 const handler = async (req: Request): Promise<Response> => {
     console.log("bot: from webhook push", req.method, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN, VOCECHAT_BOT_SECRET.slice(-5));
+    if (!req.url.startsWith(VOCECHAT_ORIGIN)) {
+        return new Response(`bot: invalided source`, { status: 403 });
+    }
     let _url = `${VOCECHAT_ORIGIN}/api/bot/`;
     try {
         switch (req.method) {
@@ -48,11 +53,15 @@ const handler = async (req: Request): Promise<Response> => {
 
                 if ('gid' in data.target) {
                     _url += `send_to_group/${data.target.gid}`;
+
                 } else {
                     _url += `send_to_user/${data.from_uid}`;
                 }
                 console.log("bot: start req ChatGPT");
-                const res = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
+                let inter = setTimeout(() => {
+                    sendMessageToBot(_url, "**正在为您生成回答，请耐心等待...**");
+                }, 5000);
+                fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -69,19 +78,28 @@ const handler = async (req: Request): Promise<Response> => {
                             },
                             {
                                 role: 'user',
-                                content: data.detail.content,
+                                // 去掉 @xxx
+                                content: data.detail.content.replace(/@[0-9]+/g, "").trim(),
                             },
                         ],
                         max_tokens: 1000,
                         temperature: 1,
                         stream: false,
                     }),
+                }).then(resp => {
+                    clearTimeout(inter)
+                    resp.json().then(data => {
+                        const [{ message: { content } }] = data.choices;
+                        // 通过bot给vocechat发消息
+                        sendMessageToBot(_url, content);
+                    });
+                }).catch(err => {
+                    clearTimeout(inter)
+                    console.error("bot: error", err);
+                    // 通过bot给vocechat发消息
+                    sendMessageToBot(_url, "**Something Error!**");
+                    return new Response(`Error`, { status: 200 });
                 });
-                const gptRespData = await res.json();
-                const [{ message: { content } }] = gptRespData.choices;
-                console.log("bot: gpt resp", content);
-                // 通过bot给vocechat发消息
-                sendMessageToBot(_url, content);
                 return new Response(`OK`, { status: 200 });
             }
             // break;
