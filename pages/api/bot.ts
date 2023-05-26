@@ -86,10 +86,10 @@ const handler = async (req: Request): Promise<Response> => {
                     }),
                 })
                 const gptData = await resp.json();
-                console.log("bot: end req ChatGPT", gptData);
                 const [{ message: { content } }] = gptData.choices;
+                console.log("bot: end req ChatGPT", gptData, content, _url);
                 // 通过bot给vocechat发消息
-                sendMessageToBot(_url, content);
+                await sendMessageToBot(_url, content);
                 handlerResp = new Response(`OK`, { status: 200 });
 
             }
@@ -103,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
     } catch (error) {
         console.error("bot: error", error);
         // 通过bot给vocechat发消息
-        sendMessageToBot(_url, "**Something Error!**");
+        await sendMessageToBot(_url, "**Something Error!**");
         return new Response(`Error`, { status: 200 });
     }
 
