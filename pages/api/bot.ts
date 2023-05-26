@@ -1,8 +1,8 @@
 import { Message } from '@/types/vocechat';
 import { OPENAI_API_HOST, OPENAI_ORGANIZATION, VOCECHAT_BOT_SECRET, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN } from '@/utils/app/const';
-export const config = {
-    runtime: 'edge',
-};
+// export const config = {
+//     runtime: 'edge',
+// };
 
 const sendMessageToBot = async (url: string, message: string) => {
     // 通过bot给vocechat发消息
