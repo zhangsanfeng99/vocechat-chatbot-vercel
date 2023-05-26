@@ -9,7 +9,7 @@
                 },
                 {
                     "key": "Access-Control-Allow-Origin",
-                    "value": "*"
+                    "value": "https://dev.voce.chat"
                 },
                 {
                     "key": "Access-Control-Allow-Methods",
