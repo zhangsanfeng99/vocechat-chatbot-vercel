@@ -20,8 +20,8 @@ export const OPENAI_ORGANIZATION =
 export const VOCECHAT_ORIGIN =
   process.env.VOCECHAT_ORIGIN || '';
 
-export const VOCECHAT_BOT_UID =
-  Number(process.env.VOCECHAT_BOT_UID) || 0;
+export const VOCECHAT_BOT_ID =
+  Number(process.env.VOCECHAT_BOT_ID) || 0;
 
 export const VOCECHAT_BOT_SECRET =
   process.env.VOCECHAT_BOT_SECRET || '';

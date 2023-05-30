@@ -1,5 +1,5 @@
 import { Message } from '@/types/vocechat';
-import { OPENAI_API_HOST, OPENAI_ORGANIZATION, VOCECHAT_BOT_SECRET, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN } from '@/utils/app/const';
+import { OPENAI_API_HOST, OPENAI_ORGANIZATION, VOCECHAT_BOT_SECRET, VOCECHAT_BOT_ID, VOCECHAT_ORIGIN } from '@/utils/app/const';
 export const config = {
     runtime: 'edge',
 };
@@ -23,7 +23,7 @@ const sendMessageToBot = async (url: string, message: string) => {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-    console.log("bot: from webhook push", req.method, VOCECHAT_BOT_UID, VOCECHAT_ORIGIN, VOCECHAT_BOT_SECRET.slice(-5));
+    console.log("bot: from webhook push", req.method, VOCECHAT_BOT_ID, VOCECHAT_ORIGIN, VOCECHAT_BOT_SECRET.slice(-5));
     let _url = `${VOCECHAT_ORIGIN}/api/bot/`;
     let handlerResp: Response | null = null;
     try {
@@ -36,21 +36,23 @@ const handler = async (req: Request): Promise<Response> => {
                 console.log("bot: handler POST", data);
                 const mentions = (data.detail.properties ?? {}).mentions ?? [];
                 // 机器人本人发的消息不处理
-                if (data.from_uid == VOCECHAT_BOT_UID) {
+                if (data.from_uid == VOCECHAT_BOT_ID) {
                     console.log("bot: ignore sent by bot self");
                     handlerResp = new Response(`ignore sent by bot self`, { status: 200 });
                     break;
                 }
                 // 群里没at 此bot的消息不处理
                 if ('gid' in data.target) {
-                    const mentionedAtGroup = mentions.some(m => m == VOCECHAT_BOT_UID);
+                    const mentionedAtGroup = mentions.some(m => m == VOCECHAT_BOT_ID);
                     if (!mentionedAtGroup) {
                         console.log("bot: ignore not mention at group");
                         handlerResp = new Response(`ignore not mention at group`, { status: 200 });
                         break;
                     }
                 }
+                // 直接回复该消息
                 _url += `reply/${data.mid}`;
+                // 直接在会话里回复
                 // if ('gid' in data.target) {
                 //     _url += `send_to_group/${data.target.gid}`;
 
