@@ -1,87 +1,60 @@
-# Vocechat Chatbot UI
+# Vocechat Chatbot
 
-
-## Deploy
+## 部署
 
 **Vercel**
 
-Host your own live version of Chatbot UI with Vercel.
+部署你的版本：
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmckaywrigley%2Fchatbot-ui)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FPrivoce%2Fvocechat-chatbot-ui)
 
-**Docker**
 
-Build locally:
+## 本地开发
 
-```shell
-docker build -t chatgpt-ui .
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 chatgpt-ui
-```
-
-Pull from ghcr:
-
-```
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 ghcr.io/mckaywrigley/chatbot-ui:main
-```
-
-## Running Locally
-
-**1. Clone Repo**
+**1. 克隆代码库**
 
 ```bash
-git clone https://github.com/mckaywrigley/chatbot-ui.git
+git clone https://github.com/Privoce/vocechat-chatbot-ui.git
 ```
 
-**2. Install Dependencies**
+**2. 安装依赖**
 
-```bash
+``` bash
 npm i
 ```
 
-**3. Provide OpenAI API Key**
+**3. 提供 OpenAI API Key**
 
-Create a .env.local file in the root of the repo with your OpenAI API Key:
-
+创建`.env.local`，填入OpenAI API Key:
 ```bash
 OPENAI_API_KEY=YOUR_KEY
 ```
 
-> You can set `OPENAI_API_HOST` where access to the official OpenAI host is restricted or unavailable, allowing users to configure an alternative host for their specific needs.
+> 如果你所在的地区，无法访问OpenAI服务，可以通过`OPENAI_API_HOST`指定代理
 
-> Additionally, if you have multiple OpenAI Organizations, you can set `OPENAI_ORGANIZATION` to specify one.
+> 如有必要，也可以设置`OPENAI_ORGANIZATION`来制定组织
 
-**4. Run App**
+**4. 跑起来**
 
 ```bash
 npm run dev
 ```
 
-**5. Use It**
+## 配置项
 
-You should be able to start chatting.
 
-## Configuration
-
-When deploying the application, the following environment variables can be set:
-
-| Environment Variable              | Default value                  | Description                                                                                                                               |
+| 环境变量              | 默认值                  | 描述                                                                                                                               |
 | --------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| VOCECHAT_ORIGIN                    |                                | Vocechat API地址，一般和你的vocechat访问地址一致，比如https://vocechat.example.com                                                                                   |
+| VOCECHAT_BOT_ID                    |                                | Vocechat 机器人ID，在你新建的机器人名称下面可以找到，#开头                                                                                   |
+| VOCECHAT_BOT_SECRET                    |                                | Vocechat机器人API Key，用于Vocechat接口授权                                                                                   |
 | OPENAI_API_KEY                    |                                | The default API key used for authentication with OpenAI                                                                                   |
 | OPENAI_API_HOST                   | `https://api.openai.com`       | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
-| OPENAI_API_TYPE                   | `openai`                       | The API type, options are `openai` or `azure`                                                                                             |
-| OPENAI_API_VERSION                | `2023-03-15-preview`           | Only applicable for Azure OpenAI                                                                                                          |
-| AZURE_DEPLOYMENT_ID               |                                | Needed when Azure OpenAI, Ref [Azure OpenAI API](https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/reference#completions) |
 | OPENAI_ORGANIZATION               |                                | Your OpenAI organization ID                                                                                                               |
 | DEFAULT_MODEL                     | `gpt-3.5-turbo`                | The default model to use on new conversations, for Azure use `gpt-35-turbo`                                                               |
 | NEXT_PUBLIC_DEFAULT_SYSTEM_PROMPT | [see here](utils/app/const.ts) | The default system prompt to use on new conversations                                                                                     |
 | NEXT_PUBLIC_DEFAULT_TEMPERATURE   | 1                              | The default temperature to use on new conversations                                                                                       |
 
-If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 
-If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
+如果你没有OpenAI API Key，可以 [在此](https://platform.openai.com/account/api-keys)申请
 
-## Contact
-
-If you have any questions, feel free to reach out to Mckay on [Twitter](https://twitter.com/mckaywrigley).
-
-[GCSE]: https://developers.google.com/custom-search/v1/overview
