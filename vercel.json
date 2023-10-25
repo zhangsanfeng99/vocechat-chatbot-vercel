@@ -21,5 +21,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "functions": {
+        "api/bot": {
+            "maxDuration": 60
+        }
+    }
 }
