@@ -15,7 +15,7 @@ const sendMessageToBot = async (url: string, message: string) => {
             },
             body: message,
         });
-        resp = await resp.json();
+        //resp = await resp.json();
         console.log("bot: send successfully", resp);
     } catch (error) {
         console.error("bot: send failed", url, error);
